@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S4 Worlds Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="sidebar-title">S4 TRACKER</div>
+  <button class="nav-btn active" onclick="showPage('home')"><span>🏠</span>Accueil</button>
+  <button class="nav-btn" onclick="showPage('worlds')"><span>🌍</span>Mondes</button>
+  <button class="nav-btn" onclick="showPage('foyers')"><span>👥</span>Foyers</button>
+  <button class="nav-btn" onclick="showPage('residences')"><span>🏡</span>Résidences</button>
+  <button class="nav-btn" onclick="showPage('vacances')"><span>🏖️</span>Vacances</button>
+  <button class="nav-btn" onclick="showPage('loisirs')"><span>🎭</span>Loisirs</button>
+</nav>
+
+<div class="main-content">
+  <div id="page-home" class="page active">
+    <div class="inner-container">
+      <div class="page-header">
+        <div class="page-title">Tableau de Bord</div>
+        <div class="page-subtitle">Progression globale de la sauvegarde</div>
+      </div>
+      <div id="globalStats" class="global-stats-grid"></div>
+      <div class="section-divider"></div>
+      <div class="world-home-grid" id="worldsHomeGrid"></div>
+    </div>
+  </div>
+
+  <div id="page-worlds" class="page">
+    <div class="inner-container">
+      <div class="page-header">
+        <div class="page-title">Gestion des Mondes</div>
+        <div class="page-subtitle">Suivi de la reconstruction urbaine</div>
+        <div class="deco-line"><span>✦</span></div>
+      </div>
+      
+      <div class="stats-overview">
+        <div class="stat-card">
+          <div class="stat-val" id="pct1">0%</div>
+          <div class="stat-label">Terrains construits</div>
+          <div class="stat-bar-bg"><div id="bar1" class="stat-bar-fill" style="background:#a78bfa"></div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="pct2">0%</div>
+          <div class="stat-label">Logements peuplés</div>
+          <div class="stat-bar-bg"><div id="bar2" class="stat-bar-fill" style="background:var(--teal)"></div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="pct3">0%</div>
+          <div class="stat-label">Remplacement Random</div>
+          <div class="stat-bar-bg"><div id="bar3" class="stat-bar-fill" style="background:var(--gold)"></div></div>
+        </div>
+      </div>
+
+      <div class="controls-row">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" placeholder="Chercher un monde...">
+        </div>
+        <select class="sort-select" id="sortSelect" onchange="renderWorldCards()">
+          <option value="name">Trier par Nom</option>
+          <option value="pct-desc">Trier par % (Décroissant)</option>
+          <option value="pct-asc">Trier par % (Croissant)</option>
+          <option value="mes-sims">Trier par Mes Sims</option>
+          <option value="terrains">Trier par Nb Terrains</option>
+        </select>
+      </div>
+
+      <div class="filter-row">
+        <button class="filter-btn active" onclick="setFilter('all', this)">Tous</button>
+        <button class="filter-btn" onclick="setFilter('empty', this)">Vides</button>
+        <button class="filter-btn" onclick="setFilter('progress', this)">En cours</button>
+        <button class="filter-btn" onclick="setFilter('done', this)">Terminés</button>
+      </div>
+
+      <div class="results-info" id="resultsCount"></div>
+      <div class="world-cards-grid" id="wcGrid">
+        <div class="no-results" id="noResults" style="display:none">Aucun monde ne correspond à votre recherche.</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-foyers" class="page">
+    <div class="inner-container">
+      <div class="page-header">
+        <div class="page-title">Mes Foyers</div>
+        <div class="page-subtitle">Gestion des familles jouées</div>
+        <div class="deco-line"><span>✦</span></div>
+      </div>
+      <div class="two-col">
+        <div class="form-panel">
+          <h3 id="foyerFormTitle">Nouveau Foyer</h3>
+          <div class="edit-mode-note" id="foyerEditNote" style="display:none">Mode édition</div>
+          <input type="hidden" id="foyerEditId">
+          <div class="form-group">
+            <label>Titre du foyer (ex. Les Gothik)</label>
+            <input type="text" id="f-titre" placeholder="Nom d'affichage">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nom de famille</label>
+              <input type="text" id="f-nom" placeholder="Sims par défaut">
+            </div>
+            <div class="form-group">
+              <label>Membres</label>
+              <input type="number" id="f-nb" placeholder="0" min="1">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Monde de résidence</label>
+            <select id="f-monde"><option value="">— Sélectionner —</option></select>
+          </div>
+          <div class="form-group">
+            <label>Notes / Lore</label>
+            <textarea id="f-desc" rows="4" placeholder="Histoire du foyer..."></textarea>
+          </div>
+          <button class="form-btn" onclick="saveFoyer()">Enregistrer le foyer</button>
+          <button class="form-btn" id="foyerCancelBtn" style="display:none;background:transparent;border:1px solid var(--border);color:var(--muted);margin-top:6px;" onclick="cancelFoyerEdit()">Annuler</button>
+        </div>
+        <div class="entries-panel">
+          <h3>Foyers enregistrés</h3>
+          <div class="entries-count" id="foyersCount"></div>
+          <div id="foyersList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-residences" class="page">
+    <div class="inner-container">
+      <div class="page-header">
+        <div class="page-title">Mon Patrimoine Immobiler</div>
+        <div class="page-subtitle">Résidences résidentielles construites</div>
+        <div class="deco-line"><span>✦</span></div>
+      </div>
+      <div class="two-col">
+        <div class="form-panel">
+          <h3 id="resiFormTitle">Nouvelle Résidence</h3>
+          <div class="edit-mode-note" id="resiEditNote" style="display:none">Mode édition</div>
+          <input type="hidden" id="resiEditId">
+          <div class="form-group">
+            <label>Adresse / Nom du terrain</label>
+            <input type="text" id="r-adresse" placeholder="ex. 21 Pre l'Abîme">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Monde</label>
+              <select id="r-monde"><option value="">— Monde —</option></select>
+            </div>
+            <div class="form-group">
+              <label>Quartier</label>
+              <input type="text" id="r-quartier" placeholder="ex. Place du Marché">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Chambres</label>
+              <input type="number" id="r-chambres" placeholder="0" min="0">
+            </div>
+            <div class="form-group">
+              <label>Sdb</label>
+              <input type="number" id="r-sdb" placeholder="0" min="0">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Superficie (m²)</label>
+            <input type="number" id="r-superficie" placeholder="ex. 200">
+          </div>
+          <div class="form-group">
+            <label>Caractéristiques (3 emplacements)</label>
+            <div class="char-group">
+              <input type="text" id="r-char1" placeholder="ex. Vue lac">
+              <input type="text" id="r-char2" placeholder="ex. Piscine">
+              <input type="text" id="r-char3" placeholder="ex. Sombre">
+            </div>
+          </div>
+          <div class="form-section-title">📝 Description</div>
+          <div class="form-group">
+            <textarea id="r-desc" rows="3" placeholder="Description de la résidence…"></textarea>
+          </div>
+          <button class="form-btn" onclick="saveResi()">Enregistrer la résidence</button>
+          <button class="form-btn" id="resiCancelBtn" style="display:none;background:transparent;border:1px solid var(--border);color:var(--muted);margin-top:6px;" onclick="cancelResiEdit()">Annuler</button>
+        </div>
+        <div class="entries-panel">
+          <h3>Résidences enregistrées</h3>
+          <div class="entries-count" id="resiCount"></div>
+          <div id="resiList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-vacances" class="page">
+    <div class="inner-container">
+      <div class="page-header">
+        <div class="page-title">Locations de Vacances</div>
+        <div class="page-subtitle">Terrains vacances — hors résidentiel</div>
+        <div class="deco-line"><span>✦</span></div>
+      </div>
+      <div class="two-col">
+        <div class="form-panel">
+          <h3 id="vacFormTitle">Nouvelle Location</h3>
+          <div class="edit-mode-note" id="vacEditNote" style="display:none">Mode édition</div>
+          <input type="hidden" id="vacEditId">
+          <div class="form-section-title">📍 Localisation</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Monde</label>
+              <select id="v-monde"><option value="">— Monde —</option></select>
+            </div>
+            <div class="form-group">
+              <label>Quartier</label>
+              <input type="text" id="v-quartier" placeholder="ex. Yukimatsu">
+            </div>
+          </div>
+          <div class="form-section-title">🏖️ Caractéristiques</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Chambres</label>
+              <input type="number" id="v-chambres" placeholder="0" min="0">
+            </div>
+            <div class="form-group">
+              <label>Salles de bain</label>
+              <input type="number" id="v-sdb" placeholder="0" min="0">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Superficie (m²)</label>
+            <input type="number" id="v-superficie" placeholder="ex. 300">
+          </div>
+          <div class="form-group">
+            <label>Prix de location (§)</label>
+            <input type="number" id="v-prix" placeholder="ex. 1200">
+          </div>
+          <div class="form-section-title">📝 Description</div>
+          <div class="form-group">
+            <textarea id="v-desc" rows="3" placeholder="Ambiance, activités à proximité…"></textarea>
+          </div>
+          <button class="form-btn" onclick="saveVac()">Enregistrer la location</button>
+          <button class="form-btn" id="vacCancelBtn" style="display:none;background:transparent;border:1px solid var(--border);color:var(--muted);margin-top:6px;" onclick="cancelVacEdit()">Annuler</button>
+        </div>
+        <div class="entries-panel">
+          <h3>Locations enregistrées</h3>
+          <div class="entries-count" id="vacCount"></div>
+          <div id="vacList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-loisirs" class="page">
+    <div class="inner-container">
+      <div class="page-header">
+        <div class="page-title">Espaces Loisirs</div>
+        <div class="page-subtitle">Terrains communautaires par monde</div>
+        <div class="deco-line"><span>✦</span></div>
+      </div>
+      <div class="two-col">
+        <div class="form-panel">
+          <h3 id="loisirFormTitle">Nouvel Espace</h3>
+          <div class="edit-mode-note" id="loisirEditNote" style="display:none">Mode édition</div>
+          <input type="hidden" id="loisirEditId">
+          <div class="form-section-title">📍 Localisation</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Monde</label>
+              <select id="l-monde"><option value="">— Monde —</option></select>
+            </div>
+            <div class="form-group">
+              <label>Quartier</label>
+              <input type="text" id="l-quartier" placeholder="ex. Fashion District">
+            </div>
+          </div>
+          <div class="form-section-title">🎯 Type d'espace</div>
+          <div class="form-group">
+            <label>Type communautaire</label>
+            <select id="l-type">
+              <option value="">— Sélectionner —</option>
+              <option>Bar / Lounge</option>
+              <option>Restaurant</option>
+              <option>Café</option>
+              <option>Spa</option>
+              <option>Salle de sport</option>
+              <option>Bibliothèque</option>
+              <option>Musée</option>
+              <option>Galerie d'art</option>
+              <option>Parc / Jardin</option>
+              <option>Discothèque / Club</option>
+              <option>Salle de jeux</option>
+              <option>Plage</option>
+              <option>Marché</option>
+              <option>Laboratoire</option>
+              <option>Lieu occulte</option>
+              <option>Terrain de sport</option>
+              <option>Espace naturel</option>
+              <option>Autre</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Nom du lieu</label>
+            <input type="text" id="l-nom" placeholder="ex. The Blue Velvet">
+          </div>
+          <div class="form-group">
+            <label>Superficie (m²)</label>
+            <input type="number" id="l-superficie" placeholder="ex. 400">
+          </div>
+          <div class="form-section-title">🎪 Activités</div>
+          <div class="form-group">
+            <textarea id="l-activites" rows="3" placeholder="ex. Yoga, hammam, soins du visage…"></textarea>
+          </div>
+          <div class="form-section-title">📝 Description</div>
+          <div class="form-group">
+            <textarea id="l-desc" rows="2" placeholder="Ambiance, style de déco…"></textarea>
+          </div>
+          <button class="form-btn" onclick="saveLoisir()">Enregistrer l'espace</button>
+          <button class="form-btn" id="loisirCancelBtn" style="display:none;background:transparent;border:1px solid var(--border);color:var(--muted);margin-top:6px;" onclick="cancelLoisirEdit()">Annuler</button>
+        </div>
+        <div class="entries-panel">
+          <h3>Espaces enregistrés</h3>
+          <div class="entries-count" id="loisirCount"></div>
+          <div id="loisirList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="confirm-overlay" id="confirmOverlay" style="display:none">
+  <div class="confirm-box">
+    <h4>Supprimer ?</h4>
+    <p id="confirmMsg">Cette entrée sera supprimée définitivement.</p>
+    <div class="confirm-actions">
+      <button class="confirm-btn cancel" onclick="closeConfirm()">Annuler</button>
+      <button class="confirm-btn danger" id="confirmOk">Supprimer</button>
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

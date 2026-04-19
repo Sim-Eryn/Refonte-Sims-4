@@ -1,0 +1,33 @@
+/* ══════════════════════════════════════
+   BASE DE DONNÉES DES MONDES
+══════════════════════════════════════ */
+const neighborhoods = [
+  { name:"Willow Creek",      note:"1 terrain avec 2 logements",                      terrains:21, terrainsVacances:0, communautaire:7,  terrainsVides:2,  residentialTotal:13, residentialVides:11, simsRandom:0,  mesSims:2 },
+  { name:"Oasis Springs",     note:null,                                               terrains:21, terrainsVacances:0, communautaire:6,  terrainsVides:2,  residentialTotal:13, residentialVides:10, simsRandom:2,  mesSims:1 },
+  { name:"Newcrest",          note:null,                                               terrains:15, terrainsVacances:0, communautaire:0,  terrainsVides:15, residentialTotal:0,  residentialVides:0,  simsRandom:0,  mesSims:0 },
+  { name:"Magnolia Promenade",note:"1 terrain avec 5 logements",                      terrains:4,  terrainsVacances:1, communautaire:3,  terrainsVides:0,  residentialTotal:5,  residentialVides:3,  simsRandom:0,  mesSims:2 },
+  { name:"Windenburg",        note:null,                                               terrains:27, terrainsVacances:0, communautaire:14, terrainsVides:1,  residentialTotal:12, residentialVides:3,  simsRandom:8,  mesSims:1 },
+  { name:"San Myshuno",       note:"Terrains avec multiples logements",               terrains:18, terrainsVacances:0, communautaire:6,  terrainsVides:0,  residentialTotal:30, residentialVides:11, simsRandom:11, mesSims:2 },
+  { name:"Forgotten Hollow",  note:null,                                               terrains:5,  terrainsVacances:0, communautaire:0,  terrainsVides:0,  residentialTotal:5,  residentialVides:0,  simsRandom:0,  mesSims:5 },
+  { name:"Brindleton Bay",    note:null,                                               terrains:16, terrainsVacances:0, communautaire:5,  terrainsVides:4,  residentialTotal:7,  residentialVides:3,  simsRandom:4,  mesSims:0 },
+  { name:"Del Sol Valley",    note:"1 terrain avec 2 logements",                      terrains:11, terrainsVacances:0, communautaire:5,  terrainsVides:0,  residentialTotal:7,  residentialVides:1,  simsRandom:3,  mesSims:3 },
+  { name:"Strangerville",     note:null,                                               terrains:12, terrainsVacances:0, communautaire:3,  terrainsVides:3,  residentialTotal:6,  residentialVides:2,  simsRandom:4,  mesSims:3 },
+  { name:"Sulani",            note:null,                                               terrains:14, terrainsVacances:0, communautaire:4,  terrainsVides:0,  residentialTotal:10, residentialVides:3,  simsRandom:4,  mesSims:3 },
+  { name:"Glimmerbrook",      note:null,                                               terrains:5,  terrainsVacances:0, communautaire:1,  terrainsVides:1,  residentialTotal:3,  residentialVides:1,  simsRandom:2,  mesSims:0 },
+  { name:"Britechester",      note:"7 logements via université uniquement",           terrains:13, terrainsVacances:0, communautaire:2,  terrainsVides:0,  residentialTotal:4,  residentialVides:1,  simsRandom:1,  mesSims:2 },
+  { name:"Evergreen Harbor",  note:"1 terrain avec 2 logements",                      terrains:13, terrainsVacances:0, communautaire:4,  terrainsVides:0,  residentialTotal:10, residentialVides:3,  simsRandom:6,  mesSims:1 },
+  { name:"Mont Komorebi",     note:"3 terrains vacances (hors catégories actives)",  terrains:14, terrainsVacances:3, communautaire:6,  terrainsVides:0,  residentialTotal:5,  residentialVides:3,  simsRandom:2,  mesSims:0 },
+  { name:"Henford-on-Bagley", note:"1 terrain vacances (hors catégories actives)",   terrains:12, terrainsVacances:1, communautaire:2,  terrainsVides:0,  residentialTotal:9,  residentialVides:4,  simsRandom:2,  mesSims:3 },
+  { name:"Tartosa",           note:"1 terrain vacances (hors catégories actives)",   terrains:9,  terrainsVacances:1, communautaire:3,  terrainsVides:1,  residentialTotal:4,  residentialVides:0,  simsRandom:3,  mesSims:1 },
+  { name:"Moonwood Mill",     note:null,                                               terrains:5,  terrainsVacances:0, communautaire:2,  terrainsVides:1,  residentialTotal:2,  residentialVides:1,  simsRandom:1,  mesSims:0 },
+  { name:"Copperdale",        note:"1 terrain vacances (hors catégories actives)",   terrains:12, terrainsVacances:1, communautaire:5,  terrainsVides:1,  residentialTotal:5,  residentialVides:0,  simsRandom:3,  mesSims:2 },
+  { name:"San Séquoia",       note:"1 terrain vacances (hors catégories actives)",   terrains:12, terrainsVacances:1, communautaire:5,  terrainsVides:0,  residentialTotal:6,  residentialVides:1,  simsRandom:3,  mesSims:2 },
+  { name:"Chestnut Ridge",    note:"1 terrain vacances (hors catégories actives)",   terrains:13, terrainsVacances:1, communautaire:4,  terrainsVides:0,  residentialTotal:9,  residentialVides:1,  simsRandom:6,  mesSims:2 },
+  { name:"Tomarang",          note:null,                                               terrains:9,  terrainsVacances:0, communautaire:2,  terrainsVides:1,  residentialTotal:11, residentialVides:3,  simsRandom:4,  mesSims:4 },
+  { name:"Ciudad Enamorada",  note:"1 terrain 5 logements + 1 terrain vacances",     terrains:13, terrainsVacances:1, communautaire:4,  terrainsVides:1,  residentialTotal:11, residentialVides:6,  simsRandom:2,  mesSims:3 },
+  { name:"Ravenwood",         note:null,                                               terrains:13, terrainsVacances:0, communautaire:3,  terrainsVides:2,  residentialTotal:8,  residentialVides:4,  simsRandom:4,  mesSims:0 },
+  { name:"Nordhaven",         note:"4 terrains logements & entreprise",              terrains:12, terrainsVacances:0, communautaire:7,  terrainsVides:3,  residentialTotal:6,  residentialVides:1,  simsRandom:4,  mesSims:1 },
+  { name:"Innisgreen",        note:null,                                               terrains:14, terrainsVacances:0, communautaire:4,  terrainsVides:2,  residentialTotal:8,  residentialVides:2,  simsRandom:5,  mesSims:1 },
+  { name:"Point Gibbi",       note:"1 terrain vacances (hors catégories actives)",   terrains:13, terrainsVacances:1, communautaire:4,  terrainsVides:1,  residentialTotal:7,  residentialVides:3,  simsRandom:3,  mesSims:1 },
+  { name:"Ondarion",          note:"2 terrains avec 2 logements",                    terrains:16, terrainsVacances:0, communautaire:4,  terrainsVides:1,  residentialTotal:13, residentialVides:4,  simsRandom:7,  mesSims:2 },
+];
